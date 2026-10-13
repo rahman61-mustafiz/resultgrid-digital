@@ -24,7 +24,7 @@ export default function RecoveryPage() {
   )
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-muted/30 p-6">
+    <div className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-xl">Lost your authenticator app?</CardTitle>

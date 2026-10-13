@@ -241,7 +241,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
   return (
     <div className="flex flex-col gap-6">
       <div>
-        <h1 className="text-xl font-semibold">Dashboard</h1>
+        <h1 className="text-2xl font-semibold">Dashboard</h1>
         {workspace ? <p className="text-sm text-muted-foreground">{workspace.name}</p> : null}
       </div>
 
@@ -290,29 +290,29 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
       </Card>
 
       {show("overview") ? (
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4" data-testid="card-overview">
-          <Card>
-            <CardHeader>
-              <CardTitle>{clientCountError ? "Unavailable" : (clientCount ?? 0)}</CardTitle>
-              <CardDescription>Active clients &amp; businesses</CardDescription>
+        <div className="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-4" data-testid="card-overview">
+          <Card className="gap-0 py-5">
+            <CardHeader className="gap-3 px-5">
+              <CardDescription className="rg-eyebrow">Active clients &amp; businesses</CardDescription>
+              <CardTitle className="rg-figure text-3xl font-medium">{clientCountError ? "Unavailable" : (clientCount ?? 0)}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>{projectsRes.ok ? openProjects.length : "Unavailable"}</CardTitle>
-              <CardDescription>Projects not archived</CardDescription>
+          <Card className="gap-0 py-5">
+            <CardHeader className="gap-3 px-5">
+              <CardDescription className="rg-eyebrow">Projects not archived</CardDescription>
+              <CardTitle className="rg-figure text-3xl font-medium">{projectsRes.ok ? openProjects.length : "Unavailable"}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>{leadsRes.ok ? leads.length : "Unavailable"}</CardTitle>
-              <CardDescription>Active leads</CardDescription>
+          <Card className="gap-0 py-5">
+            <CardHeader className="gap-3 px-5">
+              <CardDescription className="rg-eyebrow">Active leads</CardDescription>
+              <CardTitle className="rg-figure text-3xl font-medium">{leadsRes.ok ? leads.length : "Unavailable"}</CardTitle>
             </CardHeader>
           </Card>
-          <Card>
-            <CardHeader>
-              <CardTitle>{leadsRes.ok ? followupsDue.length : "Unavailable"}</CardTitle>
-              <CardDescription>Leads due for follow-up</CardDescription>
+          <Card className="gap-0 py-5">
+            <CardHeader className="gap-3 px-5">
+              <CardDescription className="rg-eyebrow">Leads due for follow-up</CardDescription>
+              <CardTitle className="rg-figure text-3xl font-medium">{leadsRes.ok ? followupsDue.length : "Unavailable"}</CardTitle>
             </CardHeader>
           </Card>
         </div>

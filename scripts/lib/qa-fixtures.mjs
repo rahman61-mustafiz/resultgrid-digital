@@ -1,6 +1,6 @@
 // Shared fixture helpers for the live QA scripts in scripts/.
 import { execFileSync } from "node:child_process"
-import { unlinkSync, writeFileSync } from "node:fs"
+import { readFileSync, unlinkSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 
@@ -22,6 +22,21 @@ const PURGE_TABLES = [
   "project_export_archive_events",
   "evidence_uploads",
 ]
+
+/**
+ * Runs a SQL file with `supabase db query --linked`, but only if the CLI is
+ * linked to the project in the env file -- the purges must never run
+ * against another project (on 13 Oct 2026 the CLI was still linked to
+ * staging, so a dev run's purge silently missed its fixtures).
+ */
+function runLinkedSql(path) {
+  const linked = readFileSync("supabase/.temp/project-ref", "utf8").trim()
+  const target = new URL(process.env.NEXT_PUBLIC_SUPABASE_URL).hostname.split(".")[0]
+  if (linked !== target) {
+    throw new Error(`the Supabase CLI is linked to ${linked}, but this run uses ${target}: run \`npx supabase link --project-ref ${target}\` first`)
+  }
+  execFileSync("npx", ["supabase", "db", "query", "--linked", "-f", path], { stdio: "pipe", shell: true })
+}
 
 const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
 
@@ -101,7 +116,7 @@ export async function purgeQaClients(admin, clientIds, namePrefix) {
   const path = join(tmpdir(), `rg-qa-purge-${Date.now()}-${process.pid}.sql`)
   writeFileSync(path, sql)
   try {
-    execFileSync("npx", ["supabase", "db", "query", "--linked", "-f", path], { stdio: "pipe", shell: true })
+    runLinkedSql(path)
   } finally {
     unlinkSync(path)
   }
@@ -148,7 +163,7 @@ export async function purgeQaLeads(admin, leadIds, namePrefix) {
   const path = join(tmpdir(), `rg-qa-leads-${Date.now()}.sql`)
   writeFileSync(path, sql)
   try {
-    execFileSync("npx", ["supabase", "db", "query", "--linked", "-f", path], { stdio: "pipe", shell: true })
+    runLinkedSql(path)
   } finally {
     unlinkSync(path)
   }

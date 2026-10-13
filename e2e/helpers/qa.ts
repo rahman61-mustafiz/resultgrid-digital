@@ -1,5 +1,5 @@
 import { execFileSync } from "node:child_process"
-import { unlinkSync, writeFileSync } from "node:fs"
+import { readFileSync, unlinkSync, writeFileSync } from "node:fs"
 import { tmpdir } from "node:os"
 import { join } from "node:path"
 import { createHmac, randomBytes } from "node:crypto"
@@ -21,6 +21,19 @@ export const admin = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, {
 })
 
 /** Must match the filter in scripts/qa-purge-fixtures.sql. */
+/**
+ * Runs a SQL file with `supabase db query --linked`, only if the CLI is
+ * linked to the project this run uses (see scripts/lib/qa-fixtures.mjs).
+ */
+function runLinkedSql(path: string) {
+  const linked = readFileSync("supabase/.temp/project-ref", "utf8").trim()
+  const target = new URL(SUPABASE_URL).hostname.split(".")[0]
+  if (linked !== target) {
+    throw new Error(`the Supabase CLI is linked to ${linked}, but this run uses ${target}: run \`npx supabase link --project-ref ${target}\` first`)
+  }
+  execFileSync("npx", ["supabase", "db", "query", "--linked", "-f", path], { stdio: "pipe", shell: true })
+}
+
 export const QA_CLIENT_PREFIX = "Vera Wellness QA "
 
 // ---------------------------------------------------------------------
@@ -215,7 +228,7 @@ async function purgeRunClients(clientIds: string[]) {
   const path = join(tmpdir(), `rg-e2e-purge-${Date.now()}.sql`)
   writeFileSync(path, sql)
   try {
-    execFileSync("npx", ["supabase", "db", "query", "--linked", "-f", path], { stdio: "pipe", shell: true })
+    runLinkedSql(path)
   } finally {
     unlinkSync(path)
   }
@@ -349,7 +362,7 @@ export async function purgeQaLeads(leadIds: string[]): Promise<number> {
   const path = join(tmpdir(), `rg-e2e-leads-${Date.now()}.sql`)
   writeFileSync(path, sql)
   try {
-    execFileSync("npx", ["supabase", "db", "query", "--linked", "-f", path], { stdio: "pipe", shell: true })
+    runLinkedSql(path)
   } finally {
     unlinkSync(path)
   }

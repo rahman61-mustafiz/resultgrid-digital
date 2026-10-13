@@ -29,7 +29,7 @@ export default async function SharePage({
 
   if (!link || link.revoked_at || isLinkExpired(link.expires_at)) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-muted/30 p-6">
+      <div className="flex min-h-svh items-center justify-center p-6">
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-xl">Link not available</CardTitle>
@@ -68,7 +68,7 @@ export default async function SharePage({
 
   if (!result.ok) {
     return (
-      <div className="flex min-h-svh items-center justify-center bg-muted/30 p-6">
+      <div className="flex min-h-svh items-center justify-center p-6">
         <Card className="w-full max-w-sm">
           <CardHeader>
             <CardTitle className="text-xl">Report not available</CardTitle>
@@ -86,7 +86,7 @@ export default async function SharePage({
   }
 
   return (
-    <div className="min-h-svh bg-muted/30 p-6">
+    <div className="min-h-svh p-6">
       <div className="mx-auto mb-4 max-w-2xl">
         <PeriodSelector basePath={`/share/${token}`} activePeriod={result.report.periodKey} rules={rules} />
       </div>

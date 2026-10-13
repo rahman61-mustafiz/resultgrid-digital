@@ -15,7 +15,7 @@ export default async function LockPage() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-4 bg-muted/30 p-6">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
       <UnlockForm factorId={factor.id} />
       <SignOutButton variant="ghost" label="Sign out instead" />
     </div>

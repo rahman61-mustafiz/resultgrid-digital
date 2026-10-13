@@ -18,7 +18,7 @@ export default async function VerifyTotpPage() {
   }
 
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-4 bg-muted/30 p-6">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
       <VerifyTotpForm factorId={factor.id} />
       <SignOutButton variant="ghost" label="Sign out instead" />
     </div>

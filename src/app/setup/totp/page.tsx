@@ -28,7 +28,7 @@ export default async function SetupTotpPage() {
   // startTotpEnrollmentAction for why this page must not do it on every
   // render.
   return (
-    <div className="flex min-h-svh flex-col items-center justify-center gap-4 bg-muted/30 p-6">
+    <div className="flex min-h-svh flex-col items-center justify-center gap-4 p-6">
       <EnrollTotpFlow />
       <SignOutButton variant="ghost" label="Sign out instead" />
     </div>

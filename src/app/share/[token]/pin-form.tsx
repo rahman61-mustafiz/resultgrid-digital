@@ -21,7 +21,7 @@ export function PinForm({ token }: { token: string }) {
   const [state, formAction, isPending] = useActionState(action, initialState)
 
   return (
-    <div className="flex min-h-svh items-center justify-center bg-muted/30 p-6">
+    <div className="flex min-h-svh items-center justify-center p-6">
       <Card className="w-full max-w-sm">
         <CardHeader>
           <CardTitle className="text-xl">Enter PIN</CardTitle>

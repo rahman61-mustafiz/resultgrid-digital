@@ -1,0 +1,10 @@
+# Never upload secrets, backups or local QA output to Vercel.
+.env*
+!.env.example
+backups
+.qa-*
+supabase/.temp
+test-results
+playwright-report
+.next
+node_modules

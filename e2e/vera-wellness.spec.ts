@@ -744,8 +744,9 @@ test("5. share link: PIN, lockout, cookie, rendered report, periods, no internal
 
   // Forged cookies in a separate browser never unlock the report.
   const forger = await browser.newContext()
+  const cookieDomain = new URL(test.info().project.use.baseURL!).hostname
   for (const value of ["1", createHash("sha256").update(runId).digest("base64url")]) {
-    await forger.addCookies([{ name: `rg_share_${shareToken}`, value, domain: "localhost", path: sharePath }])
+    await forger.addCookies([{ name: `rg_share_${shareToken}`, value, domain: cookieDomain, path: sharePath }])
     const p = await forger.newPage()
     await p.goto(sharePath)
     await expect(p.getByText("Enter PIN")).toBeVisible()

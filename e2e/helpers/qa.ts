@@ -8,7 +8,7 @@ import { createClient, type SupabaseClient } from "@supabase/supabase-js"
 
 function requireEnv(name: string): string {
   const value = process.env[name]
-  if (!value) throw new Error(`Missing required env var for e2e: ${name} (expected in .env.local)`)
+  if (!value) throw new Error(`Missing required env var for e2e: ${name} (expected in .env.local, or the RG_ENV_FILE file)`)
   return value
 }
 

@@ -6,12 +6,37 @@ deployment needs Rana's separate, explicit authorization.
 
 ## Current state
 
-- Development Supabase project: `resultgrid-digital` (ref
-  `nplhkznhffvezoflrpza`), region `ap-northeast-1`, in the account's
-  personal organization. All migrations applied; contains only synthetic/
-  test data.
-- No Vercel project exists yet.
-- No production Supabase project exists yet.
+- **Development** Supabase project: `resultgrid-digital` (ref
+  `nplhkznhffvezoflrpza`), `ap-northeast-1`, personal organization.
+  Synthetic/test data only. The Supabase CLI stays linked to it.
+- **Staging** (created 13 October 2026):
+  - Supabase `resultgrid-digital-staging` (ref `ixfsyzzdetqpuekxwoxz`),
+    organization "ResultGrid Digital", `ap-south-1` (Mumbai, chosen by
+    Rana). All migrations applied. Auth: email/password on, signup off
+    (`signup_disabled` checked), site URL and recovery redirect from
+    `[remotes.staging]` in `supabase/config.toml`. SMTP is not set up on
+    staging yet.
+  - Vercel project `resultgrid-digital-staging` (team `mustafizrahman`),
+    https://resultgrid-digital-staging.vercel.app, functions in `bom1`.
+    Env vars set for the Production environment; `CRON_SECRET` and the
+    service-role key are marked sensitive. Deployed from the CLI
+    (`vercel deploy --prod`), not connected to GitHub.
+  - Secrets: `.env.staging.local` (gitignored), including the database
+    password.
+  - Owner created by Rana with `scripts/bootstrap-workspace.mjs`; TOTP
+    enrolled.
+  - **Acceptance run, 13 October 2026, against the deployed staging app
+    and database:** RPC authorization 105/105, approval ledger 75/75, Vera
+    Wellness 87/87, lifecycle 120/120, evidence 88/88, browser suite 29/29
+    (`RG_ENV_FILE=.env.staging.local RG_BASE_URL=https://resultgrid-digital-staging.vercel.app
+    npx playwright test`, with the CLI linked to staging). Afterwards: no
+    clients, projects, leads or uploads; one active account (the Owner);
+    five QA accounts soft-deleted (anonymized, sign-in refused) because
+    audit rows reference them.
+  - Not checked on staging: the emailed recovery flow (no SMTP there), a
+    real Vercel Cron firing (the route was called by hand), a backup and
+    restore of staging.
+- **No production** Supabase or Vercel project exists.
 
 ## Before deploying, in order
 
@@ -147,8 +172,7 @@ check.
 
 ## What is explicitly NOT done here
 
-- No Vercel project has been created or configured.
+- No production Vercel or Supabase project exists (staging only, above).
 - No custom domain has been connected.
-- No production Supabase project exists.
 - No real client data has been imported (correctly -- the handoff
   prohibits this without separate authorization).

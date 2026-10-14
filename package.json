@@ -8,6 +8,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
+    "build:webpack": "npm run build",
     "start": "next start",
     "lint": "eslint",
     "bootstrap:workspace": "node --env-file=.env.local scripts/bootstrap-workspace.mjs",

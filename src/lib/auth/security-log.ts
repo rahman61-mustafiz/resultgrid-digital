@@ -1,5 +1,6 @@
 import "server-only"
 
+import { clientIp } from "@/lib/auth/client-ip"
 import { createAdminClient } from "@/lib/supabase/admin"
 import type { Json } from "@/lib/supabase/types"
 import type { SecurityEventType } from "@/lib/domain/enums"
@@ -26,7 +27,7 @@ export async function logSecurityEvent(input: {
     user_id: input.userId,
     workspace_id: input.workspaceId ?? null,
     metadata: input.metadata ?? {},
-    ip_address: input.ipAddress ?? null,
+    ip_address: clientIp(input.ipAddress),
     user_agent: input.userAgent ?? null,
   })
 

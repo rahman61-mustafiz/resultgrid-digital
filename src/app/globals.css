@@ -46,6 +46,11 @@
   --glass: rgb(251 252 253 / 0.82);
   --signal: #0f7c80;
 
+  /* Font families (files from @fontsource, imported in src/app/layout.tsx) */
+  --font-plex-sans: "IBM Plex Sans";
+  --font-plex-mono: "IBM Plex Mono";
+  --font-chakra: "Chakra Petch";
+
 /* ResultGrid Digital brand palette (interim logo) */
   --brand-violet: #6d28d9;
   --brand-blue: #2563eb;

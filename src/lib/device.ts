@@ -31,7 +31,7 @@ export const MOBILE_VIEW_ONLY_MESSAGE =
  * verification, unlocking, account recovery, signing out, and the client
  * share-link PIN form. Everything else is read-only on a phone.
  */
-const MOBILE_WRITABLE_PATHS = ["/login", "/setup/totp", "/lock", "/recovery", "/share", "/auth/sign-out"]
+const MOBILE_WRITABLE_PATHS = ["/login", "/setup/totp", "/lock", "/recovery", "/forgot-password", "/reset-password", "/share", "/auth/sign-out"]
 
 export function isMobileWritablePath(pathname: string): boolean {
   return MOBILE_WRITABLE_PATHS.some((path) => pathname === path || pathname.startsWith(`${path}/`))

@@ -9,7 +9,7 @@ import { logSecurityEvent } from "@/lib/auth/security-log"
 import { recognizeDevice } from "@/lib/auth/devices"
 import { checkLoginCooldown } from "@/lib/auth/rate-limit"
 import { getUserWorkspaceId } from "@/lib/auth/workspace"
-import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session-policy"
+import { PASSWORD_RESET_WINDOW_SECONDS, SESSION_COOKIE, secondsSince, sessionCookieOptions } from "@/lib/auth/session-policy"
 
 const verifySchema = z.object({
   factorId: z.string().min(1),
@@ -96,6 +96,13 @@ export async function verifyLoginTotpAction(
     new Date().toISOString(),
     sessionCookieOptions()
   )
+
+  // Forgot password: the link was opened (src/app/auth/confirm/route.ts);
+  // with the TOTP code done, go and set the new password.
+  const resetStartedAt = cookieStore.get(SESSION_COOKIE.passwordReset)?.value
+  if (resetStartedAt && secondsSince(resetStartedAt) <= PASSWORD_RESET_WINDOW_SECONDS) {
+    redirect("/reset-password")
+  }
 
   redirect("/dashboard")
 }

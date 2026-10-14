@@ -1,7 +1,8 @@
 import "server-only"
 
 import { createClient } from "@/lib/supabase/server"
-import { RECENT_REAUTH_WINDOW_SECONDS } from "@/lib/auth/session-policy"
+import { isRecentPasswordReset, type AmrEntry } from "@/lib/auth/amr"
+import { PASSWORD_RESET_WINDOW_SECONDS, RECENT_REAUTH_WINDOW_SECONDS } from "@/lib/auth/session-policy"
 
 export class RecentReauthRequiredError extends Error {
   constructor() {
@@ -11,8 +12,6 @@ export class RecentReauthRequiredError extends Error {
     this.name = "RecentReauthRequiredError"
   }
 }
-
-type AmrEntry = { method: string; timestamp: number }
 
 function decodeAccessTokenAmr(accessToken: string): AmrEntry[] {
   const payloadSegment = accessToken.split(".")[1]
@@ -69,4 +68,30 @@ export async function requireRecentReauth() {
   if (!isFresh(passwordAt) || !isFresh(totpAt)) {
     throw new RecentReauthRequiredError()
   }
+}
+
+export class PasswordResetNotVerifiedError extends Error {
+  constructor() {
+    super("Open the reset link from your email and enter your authenticator code first.")
+    this.name = "PasswordResetNotVerifiedError"
+  }
+}
+
+/**
+ * The forgot-password flow's gate: the session must have come from an
+ * emailed reset link and then passed the TOTP challenge, both within
+ * PASSWORD_RESET_WINDOW_SECONDS. Uses getClaims(), which verifies the
+ * access token's signature, so the amr claims can't be forged.
+ */
+export async function requireRecentPasswordReset() {
+  const supabase = await createClient()
+  const { data, error } = await supabase.auth.getClaims()
+  const amr = (data?.claims?.amr ?? []) as AmrEntry[]
+  if (error || !data?.claims || data.claims.aal !== "aal2") {
+    throw new PasswordResetNotVerifiedError()
+  }
+  if (!isRecentPasswordReset(amr, Date.now() / 1000, PASSWORD_RESET_WINDOW_SECONDS)) {
+    throw new PasswordResetNotVerifiedError()
+  }
+  return { userId: data.claims.sub as string }
 }

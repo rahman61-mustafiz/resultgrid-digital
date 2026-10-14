@@ -63,6 +63,8 @@ export const SECURITY_EVENT_TYPES = [
   "SESSION_LOCKED",
   "SESSION_UNLOCKED",
   "RECENT_REAUTH_COMPLETED",
+  "PASSWORD_RESET_REQUESTED",
+  "PASSWORD_RESET_COMPLETED",
 ] as const
 export type SecurityEventType = (typeof SECURITY_EVENT_TYPES)[number]
 

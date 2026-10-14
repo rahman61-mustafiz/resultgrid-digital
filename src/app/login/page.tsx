@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
+import Link from "next/link"
 
 import { signInAction, type SignInState } from "@/app/login/actions"
 import { Button } from "@/components/ui/button"
@@ -63,6 +64,14 @@ export default function LoginPage() {
               {isPending ? "Signing in..." : "Sign in"}
             </Button>
           </form>
+          <p className="mt-4 flex flex-wrap justify-between gap-2 text-sm text-muted-foreground">
+            <Link href="/forgot-password" className="underline">
+              Forgot password?
+            </Link>
+            <Link href="/recovery" className="underline">
+              Lost your authenticator app?
+            </Link>
+          </p>
         </CardContent>
       </Card>
     </div>

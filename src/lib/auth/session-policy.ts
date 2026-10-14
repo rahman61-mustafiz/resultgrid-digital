@@ -31,7 +31,16 @@ export const SESSION_COOKIE = {
   lastActivityAt: "rg_last_activity_at",
   /** Presence means the app is idle-locked and must show the unlock (TOTP challenge) screen. */
   locked: "rg_locked",
+  /**
+   * ISO timestamp set when a password-reset link is opened. Only says where
+   * to go after the TOTP challenge; the reset itself is authorized by the
+   * session's signed amr claims (src/lib/auth/reauth.ts), never this cookie.
+   */
+  passwordReset: "rg_password_reset",
 } as const
+
+/** A password-reset link must be finished (TOTP + new password) within this window. */
+export const PASSWORD_RESET_WINDOW_SECONDS = 15 * 60
 
 const baseCookieOptions = {
   httpOnly: true,

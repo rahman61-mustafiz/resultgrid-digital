@@ -10,7 +10,7 @@ import {
   sessionCookieOptions,
 } from "@/lib/auth/session-policy"
 
-const PUBLIC_PATHS = ["/login", "/auth"]
+const PUBLIC_PATHS = ["/login", "/auth", "/forgot-password"]
 
 function isPublicPath(pathname: string) {
   return PUBLIC_PATHS.some(
@@ -39,6 +39,12 @@ export async function proxy(request: NextRequest) {
   // just added to PUBLIC_PATHS (which only applies in the !user branch
   // below).
   if (pathname === "/recovery" || pathname.startsWith("/recovery/")) {
+    return (await updateSession(request)).response
+  }
+
+  // An emailed reset/recovery link must work in every auth state: it
+  // replaces whatever session this browser had (src/app/auth/confirm/route.ts).
+  if (pathname === "/auth/confirm") {
     return (await updateSession(request)).response
   }
 

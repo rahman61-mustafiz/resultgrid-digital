@@ -258,6 +258,13 @@ otp_expiry = 3600
 # admin_email = "admin@email.com"
 # sender_name = "Admin"
 
+# "Reset password" email: used by Forgot password (/forgot-password) and
+# Lost authenticator (/recovery). Links to /auth/confirm with a token hash,
+# verified on the server, so the link works in any browser.
+[auth.email.template.recovery]
+subject = "ResultGrid Digital: reset your password"
+content_path = "./supabase/templates/recovery.html"
+
 # Uncomment to customize email template
 # [auth.email.template.invite]
 # subject = "You have been invited"
@@ -441,7 +448,7 @@ project_id = "ixfsyzzdetqpuekxwoxz"
 
 [remotes.staging.auth]
 site_url = "https://resultgrid-digital-staging.vercel.app"
-additional_redirect_urls = ["https://resultgrid-digital-staging.vercel.app/recovery/callback"]
+additional_redirect_urls = ["https://resultgrid-digital-staging.vercel.app/recovery/callback", "https://resultgrid-digital-staging.vercel.app/reset-password"]
 
 # Production (Supabase org "ResultGrid Digital", Free plan for now -- Rana,
 # 13 Oct 2026; ap-south-1). Served at https://pukita.resultgriddigital.com.
@@ -450,4 +457,4 @@ project_id = "hsexcnknowjzgebxgevg"
 
 [remotes.production.auth]
 site_url = "https://pukita.resultgriddigital.com"
-additional_redirect_urls = ["https://pukita.resultgriddigital.com/recovery/callback"]
+additional_redirect_urls = ["https://pukita.resultgriddigital.com/recovery/callback", "https://pukita.resultgriddigital.com/reset-password"]

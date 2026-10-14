@@ -1,0 +1,21 @@
+<!-- ResultGrid Digital: password reset / account recovery link.
+     Used for both "Forgot password?" and "Lost your authenticator app?".
+     {{ .RedirectTo }} says which (/reset-password or /recovery/callback);
+     src/app/auth/confirm/route.ts verifies the token on the server. -->
+<div style="font-family: Arial, Helvetica, sans-serif; color: #1b2430; max-width: 480px;">
+  <h2 style="font-size: 18px; margin: 0 0 12px;">ResultGrid Digital</h2>
+  <p style="font-size: 14px; line-height: 1.5;">
+    Someone asked to reset the password or recover the account for {{ .Email }}.
+    Open this link to continue. It works once and expires in one hour.
+  </p>
+  <p style="margin: 20px 0;">
+    <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&amp;type=recovery&amp;next={{ .RedirectTo }}"
+       style="background: #1b2430; color: #f6f9fb; padding: 10px 18px; border-radius: 6px; text-decoration: none; font-size: 14px;">
+      Continue
+    </a>
+  </p>
+  <p style="font-size: 13px; line-height: 1.5; color: #566375;">
+    You'll still need your authenticator app code before anything changes.
+    If you didn't ask for this, ignore this email: your password and authenticator stay as they are.
+  </p>
+</div>

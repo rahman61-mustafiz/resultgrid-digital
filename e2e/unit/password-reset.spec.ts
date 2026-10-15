@@ -1,4 +1,6 @@
 import { expect, test } from "@playwright/test"
+import { readFileSync, readdirSync } from "node:fs"
+import { join } from "node:path"
 
 import { isRecentPasswordReset } from "@/lib/auth/amr"
 
@@ -31,5 +33,19 @@ test.describe("forgot-password gate (signed amr claims)", () => {
 
   test("timestamps far in the future are rejected", () => {
     expect(isRecentPasswordReset([at("recovery", -3600), at("totp", -3600)], NOW, WINDOW)).toBe(false)
+  })
+})
+
+test.describe("recovery emails", () => {
+  test("are sent only through sendRecoveryEmail (plain token, not PKCE)", () => {
+    // A PKCE token (pkce_...) from the SSR client verifies at /auth/confirm
+    // without giving a session, so the reader lands back on /login.
+    const offenders = readdirSync("src", { recursive: true, withFileTypes: true })
+      .filter((f) => f.isFile() && /\.tsx?$/.test(f.name))
+      .map((f) => join(f.parentPath, f.name))
+      .filter((p) => !p.endsWith(join("lib", "auth", "recovery-email.ts")))
+      .filter((p) => readFileSync(p, "utf8").includes("resetPasswordForEmail("))
+    expect(offenders).toEqual([])
+    expect(readFileSync(join("src", "lib", "auth", "recovery-email.ts"), "utf8")).toContain('flowType: "implicit"')
   })
 })

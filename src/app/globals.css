@@ -4,54 +4,54 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Blueprint workshop palette (13 Oct 2026, from Rana's inspiration):
-     mist #EEF2F6, paper #FBFCFD, graphite #1B2430, steel #566375,
-     trace #A9B6C4, signal teal #0F7C80. */
-  --radius: 0.625rem;
-  --background: #eef2f6;
-  --foreground: #1b2430;
-  --card: #fbfcfd;
-  --card-foreground: #1b2430;
-  --popover: #fbfcfd;
-  --popover-foreground: #1b2430;
-  --primary: #1b2430;
-  --primary-foreground: #f6f9fb;
-  --secondary: #e6ecf2;
-  --secondary-foreground: #1b2430;
-  --muted: #e9eef3;
-  --muted-foreground: #566375;
-  --accent: #e3eef0;
-  --accent-foreground: #0b5f62;
+  /* Sky palette (14 Oct 2026, from Rana's Noor admin reference): a light
+     sky band at the top, white wave, white cards on a near-white page,
+     deep sky-teal primary, navy headings. */
+  --radius: 0.75rem;
+  --background: #f4f9fc;
+  --foreground: #0f2a43;
+  --card: #ffffff;
+  --card-foreground: #0f2a43;
+  --popover: #ffffff;
+  --popover-foreground: #0f2a43;
+  --primary: #1d6a8f;
+  --primary-foreground: #ffffff;
+  --secondary: #e6f3fa;
+  --secondary-foreground: #0f2a43;
+  --muted: #edf5fa;
+  --muted-foreground: #5a7086;
+  --accent: #e0f1f9;
+  --accent-foreground: #155877;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #d3dce5;
-  --input: #c6d1dc;
-  --ring: #0f7c80;
-  --chart-1: #0f7c80;
-  --chart-2: #3b82c4;
-  --chart-3: #1e9e5a;
-  --chart-4: #e8812a;
-  --chart-5: #8a4b2a;
-  --sidebar: #fbfcfd;
-  --sidebar-foreground: #1b2430;
-  --sidebar-primary: #1b2430;
-  --sidebar-primary-foreground: #f6f9fb;
-  --sidebar-accent: #e3eef0;
-  --sidebar-accent-foreground: #0b5f62;
-  --sidebar-border: #d3dce5;
-  --sidebar-ring: #0f7c80;
+  --border: #dbe8f0;
+  --input: #cddfea;
+  --ring: #2b8ab8;
+  --chart-1: #1f6fb2;
+  --chart-2: #9a6a1c;
+  --chart-3: #2f7d32;
+  --chart-4: #c0609a;
+  --chart-5: #e0892a;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f2a43;
+  --sidebar-primary: #1d6a8f;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #e0f1f9;
+  --sidebar-accent-foreground: #155877;
+  --sidebar-border: #dbe8f0;
+  --sidebar-ring: #2b8ab8;
 
-  /* Surfaces over the backdrop */
-  --sheet: rgb(246 249 251 / 0.78);
-  --sheet-border: rgb(169 182 196 / 0.55);
-  --glass: rgb(251 252 253 / 0.82);
-  --signal: #0f7c80;
+  /* The sky band behind the top of every page */
+  --sky-top: #cdebf8;
+  --sky-bottom: #e2f4fc;
+  --sky-blob: #b9e2f4;
+  --signal: #1d6a8f;
+  --eyebrow: #2a6f92;
 
   /* Font families (files from @fontsource, imported in src/app/layout.tsx) */
-  --font-plex-sans: "IBM Plex Sans";
+  --font-poppins: "Poppins";
   --font-plex-mono: "IBM Plex Mono";
-  --font-chakra: "Chakra Petch";
 
-/* ResultGrid Digital brand palette (interim logo) */
+  /* ResultGrid Digital brand palette (interim logo) */
   --brand-violet: #6d28d9;
   --brand-blue: #2563eb;
   --brand-cyan: #06b6d4;
@@ -139,9 +139,9 @@
   --color-brand-warm-white: var(--brand-warm-white);
 
   --color-signal: var(--signal);
-  --font-sans: var(--font-plex-sans), ui-sans-serif, system-ui, sans-serif;
+  --font-sans: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-plex-mono), ui-monospace, monospace;
-  --font-display: var(--font-chakra), var(--font-plex-sans), sans-serif;
+  --font-display: var(--font-poppins), ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -153,95 +153,84 @@
   }
   h1 {
     font-family: var(--font-display);
-    letter-spacing: 0.01em;
+    font-weight: 700;
+    letter-spacing: -0.015em;
   }
   a {
     text-underline-offset: 3px;
   }
 }
 
-/* ---- Blueprint workshop surfaces ---------------------------------------- */
+/* ---- Sky surfaces ------------------------------------------------------- */
 
-/* The fixed SVG backdrop (src/components/tech-backdrop.tsx), behind everything. */
-.tech-backdrop {
-  position: fixed;
-  inset: 0;
+/* The sky band (src/components/sky-backdrop.tsx): scrolls with the page,
+   behind everything. */
+.rg-sky {
+  position: absolute;
+  inset: 0 0 auto 0;
+  height: 440px;
   z-index: -1;
   pointer-events: none;
-  background: var(--background);
+  overflow: hidden;
 }
-.tech-backdrop svg {
+.rg-sky svg {
   width: 100%;
   height: 100%;
   display: block;
 }
-/* Over the backdrop on the client share pages: the pattern stays faint. */
-.tech-backdrop-veil {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  pointer-events: none;
-  background: rgb(251 252 253 / 0.82);
-}
-.rg-spin {
-  animation: rg-turn 140s linear infinite;
-}
-.rg-spin-slow {
-  animation: rg-turn 100s linear infinite reverse;
-}
-@keyframes rg-turn {
-  to {
-    transform: rotate(360deg);
-  }
-}
-@media (prefers-reduced-motion: reduce) {
-  .rg-spin,
-  .rg-spin-slow {
-    animation: none;
-  }
+/* Client share pages: no band, a plain page. */
+body:has(.rg-plain) .rg-sky {
+  display: none;
 }
 
-/* The frosted drafting sheet that holds each page's content. */
+/* The content area: open, no frame -- cards carry the structure. */
 .rg-sheet {
-  background: var(--sheet);
-  border: 1px solid var(--sheet-border);
-  border-radius: 1.25rem;
-  backdrop-filter: blur(14px) saturate(1.1);
-  -webkit-backdrop-filter: blur(14px) saturate(1.1);
-  box-shadow: 0 1px 0 rgb(255 255 255 / 0.8) inset, 0 24px 60px -32px rgb(27 36 48 / 0.35);
+  background: transparent;
 }
-/* Glass bar (header) and glass panels (sign-in cards) directly on the backdrop. */
+/* Header bar: clear over the sky, frosted once content scrolls under it. */
 .rg-glass {
-  background: var(--glass);
+  background: rgb(205 235 248 / 0.78);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Cards: solid paper, crisp edge, lifted, so figures stay sharp. In the
-   base layer so a card's own utilities (e.g. an amber warning border) win. */
+/* Cards: white, soft edge, gently lifted. In the base layer so a card's
+   own utilities (e.g. an amber warning border) win. */
 @layer base {
   [data-slot="card"] {
-    box-shadow: 0 1px 2px rgb(27 36 48 / 0.06), 0 10px 24px -18px rgb(27 36 48 / 0.35);
+    border-color: rgb(219 232 240 / 0.7);
+    box-shadow: 0 1px 2px rgb(15 42 67 / 0.04), 0 14px 34px -20px rgb(15 42 67 / 0.22);
   }
 }
 
-/* Figures: monospaced, aligned digits. */
+/* Figures: aligned digits, a little tighter. */
 .rg-figure {
-  font-family: var(--font-mono);
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 /* Aligned digits in every table. */
 table {
   font-variant-numeric: tabular-nums;
 }
-/* Small uppercase labels, like the annotations on a drawing. */
+/* Small uppercase labels above a heading or a figure. */
 .rg-eyebrow {
-  font-family: var(--font-mono);
   font-size: 0.6875rem;
+  font-weight: 600;
   letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: var(--muted-foreground);
+  color: var(--eyebrow);
+}
+/* The white date pill in a page hero. */
+.rg-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  border-radius: 9999px;
+  background: #ffffff;
+  padding: 0.375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  box-shadow: 0 6px 18px -12px rgb(15 42 67 / 0.35);
 }
 
 /* Phone layout is view-only: block pointer input on write controls before

@@ -3,7 +3,7 @@ import { devices, expect, test, type BrowserContext, type Page } from "@playwrig
 import { cleanupQa, createQaOwner, freshTotp, type QaOwner } from "./helpers/qa"
 
 /**
- * Screenshots of the "blueprint workshop" design for review, not
+ * Screenshots of the "sky" design for review, not
  * assertions about it: login, dashboard and a list page on desktop, the
  * dashboard on a phone, and a client share page. Written to
  * test-results/design/. Runs only when asked:

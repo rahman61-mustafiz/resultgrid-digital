@@ -136,3 +136,25 @@ test("5. the old password stops working and the new one works", async ({ browser
   await expect(p.getByLabel("New password", { exact: true })).toHaveCount(0)
   await other.close()
 })
+
+test("6. with the authenticator removed, the link leads to a fresh enrollment, then the new password", async ({ browser, baseURL }) => {
+  const { data: factors } = await admin.auth.admin.mfa.listFactors({ userId: owner!.userId })
+  for (const f of factors!.factors) await admin.auth.admin.mfa.deleteFactor({ id: f.id, userId: owner!.userId })
+
+  const fresh = await browser.newContext()
+  const p = await fresh.newPage()
+  await p.goto(await resetLink(baseURL!))
+  await expect(p).toHaveURL(/\/setup\/totp$/)
+  const secret = (await p.locator("p.font-mono").textContent())!.trim()
+  await p.getByLabel("Authenticator code").fill(await freshTotp(secret))
+  await p.getByRole("button", { name: "Confirm and continue" }).click()
+  await expect(p).toHaveURL(/\/reset-password$/)
+
+  const third = `${NEW_PASSWORD}-3`
+  await p.getByLabel("New password", { exact: true }).fill(third)
+  await p.getByLabel("Confirm new password").fill(third)
+  await p.getByRole("button", { name: "Set new password" }).click()
+  await expect(p).toHaveURL(/\/dashboard\?password=reset$/)
+  owner!.password = third
+  await fresh.close()
+})

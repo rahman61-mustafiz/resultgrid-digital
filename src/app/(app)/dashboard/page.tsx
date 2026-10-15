@@ -240,9 +240,30 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   return (
     <div className="flex flex-col gap-6">
+      <section className="flex flex-col items-start gap-4 pt-2 pb-10 sm:pb-16">
+        {tzOk ? (
+          <span className="rg-pill">
+            <span aria-hidden="true" className="size-1.5 rounded-full bg-primary" />
+            {new Intl.DateTimeFormat("en-GB", { timeZone, weekday: "long", day: "numeric", month: "long" }).format(new Date())}
+          </span>
+        ) : null}
+        <h1 className="text-4xl sm:text-5xl">Welcome back</h1>
+        <p className="max-w-xl text-muted-foreground">
+          {workspace ? `${workspace.name}: ` : ""}clients, projects, leads and reports in one place. Here is where the work stands.
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <Button asChild>
+            <Link href="/projects">Projects</Link>
+          </Button>
+          <Button asChild variant="outline" className="bg-white">
+            <Link href="/leads">Leads</Link>
+          </Button>
+        </div>
+      </section>
+
       <div>
-        <h1 className="text-2xl font-semibold">Dashboard</h1>
-        {workspace ? <p className="text-sm text-muted-foreground">{workspace.name}</p> : null}
+        <p className="rg-eyebrow">Overview</p>
+        <h2 className="font-display text-3xl font-bold tracking-tight">Dashboard</h2>
       </div>
 
       <ListFilters

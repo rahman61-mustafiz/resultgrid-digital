@@ -9,7 +9,9 @@ import { logSecurityEvent } from "@/lib/auth/security-log"
 import { recognizeDevice } from "@/lib/auth/devices"
 import { checkLoginCooldown } from "@/lib/auth/rate-limit"
 import { getUserWorkspaceId } from "@/lib/auth/workspace"
-import { SESSION_COOKIE, sessionCookieOptions } from "@/lib/auth/session-policy"
+import { PASSWORD_RESET_WINDOW_SECONDS, SESSION_COOKIE, secondsSince, sessionCookieOptions } from "@/lib/auth/session-policy"
+import { totpIssuer } from "@/lib/auth/totp-issuer"
+import { serverEnv } from "@/lib/env/server"
 
 const verifySchema = z.object({
   factorId: z.string().min(1),
@@ -60,7 +62,7 @@ export async function startTotpEnrollmentAction(): Promise<StartEnrollmentResult
 
   const { data: enrollData, error } = await supabase.auth.mfa.enroll({
     factorType: "totp",
-    issuer: "ResultGrid Digital",
+    issuer: totpIssuer(serverEnv.APP_URL),
   })
 
   if (error || !enrollData || enrollData.type !== "totp") {
@@ -150,6 +152,13 @@ export async function verifyTotpEnrollmentAction(
     new Date().toISOString(),
     sessionCookieOptions()
   )
+
+  // Forgot password with no authenticator enrolled (e.g. it was removed):
+  // the emailed link, then this fresh enrollment, then the new password.
+  const resetStartedAt = cookieStore.get(SESSION_COOKIE.passwordReset)?.value
+  if (resetStartedAt && secondsSince(resetStartedAt) <= PASSWORD_RESET_WINDOW_SECONDS) {
+    redirect("/reset-password")
+  }
 
   redirect("/dashboard")
 }

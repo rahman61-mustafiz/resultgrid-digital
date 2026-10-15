@@ -4,18 +4,8 @@ import { createClient } from "@/lib/supabase/server"
 import { isViewOnlyDevice } from "@/lib/auth/edit-policy"
 import { MOBILE_VIEW_ONLY_MESSAGE } from "@/lib/device"
 import { SignOutButton } from "@/components/sign-out-button"
+import { PrimaryNav } from "@/components/primary-nav"
 import { ViewOnlyGuard } from "@/components/view-only-guard"
-
-const NAV_LINKS = [
-  { href: "/dashboard", label: "Dashboard" },
-  { href: "/clients", label: "Clients" },
-  { href: "/projects", label: "Projects" },
-  { href: "/leads", label: "Leads" },
-  { href: "/reports", label: "Reports" },
-  { href: "/files", label: "Files" },
-  { href: "/exports", label: "Exports" },
-  { href: "/settings", label: "Settings" },
-]
 
 /** A small gear: the brand mark in the header. */
 function BrandMark() {
@@ -48,44 +38,44 @@ export default async function AppLayout({
 
   return (
     <div className="flex min-h-svh flex-col">
-      <header className="rg-glass sticky top-0 z-20 border-b border-[var(--sheet-border)]">
-        <div className="mx-auto flex max-w-6xl flex-wrap items-center justify-between gap-3 px-6 py-3">
+      <header className="rg-glass sticky top-0 z-20">
+        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-x-5 gap-y-2 px-6 pt-4 pb-2">
           <Link href="/dashboard" className="flex items-center gap-2.5">
             <BrandMark />
-            <span className="font-display text-lg font-semibold tracking-wide">ResultGrid Digital</span>
-          </Link>
-          <div className="flex items-center gap-3">
-            <span className="hidden text-sm text-muted-foreground sm:inline">
-              {user?.email}
+            <span className="flex flex-col leading-none">
+              <span className="font-display text-lg font-bold tracking-tight">ResultGrid</span>
+              <span className="mt-1 text-[0.625rem] font-semibold tracking-[0.22em] text-muted-foreground uppercase">Digital · Marketing OS</span>
             </span>
-            <SignOutButton />
+          </Link>
+          <div className="order-2 flex items-center gap-3 lg:order-3">
+            <span
+              title={user?.email ?? undefined}
+              className="flex size-9 items-center justify-center rounded-full bg-primary text-sm font-semibold text-primary-foreground"
+            >
+              <span aria-hidden="true">{(user?.email ?? "?").slice(0, 1).toUpperCase()}</span>
+              <span className="sr-only">Signed in as {user?.email}</span>
+            </span>
+            <span className="hidden flex-col leading-tight sm:flex xl:hidden 2xl:flex">
+              <span className="text-sm font-semibold">Owner</span>
+              <span className="text-xs text-muted-foreground">signed in</span>
+            </span>
+            <SignOutButton variant="ghost" />
           </div>
-          <nav
-            className="-mx-6 flex w-full items-center gap-5 overflow-x-auto px-6 pb-1"
-            aria-label="Primary"
-          >
-            {NAV_LINKS.map((link) => (
-              <Link
-                key={link.href}
-                href={link.href}
-                className="shrink-0 rounded-md px-1 text-sm font-medium text-muted-foreground transition-colors hover:text-signal focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none"
-              >
-                {link.label}
-              </Link>
-            ))}
-          </nav>
+          <div className="order-3 -mx-6 w-full px-6 lg:order-2 lg:mx-0 lg:w-auto lg:flex-1 lg:px-0">
+            <PrimaryNav />
+          </div>
         </div>
       </header>
       {viewOnly ? (
         <div
           role="status"
           data-testid="mobile-view-only"
-          className="rg-glass border-b border-[var(--sheet-border)] px-6 py-2 text-center text-sm text-muted-foreground"
+          className="rg-glass px-6 py-2 text-center text-sm text-muted-foreground"
         >
           View-only on this device. {MOBILE_VIEW_ONLY_MESSAGE}
         </div>
       ) : null}
-      <main className="rg-sheet mx-auto my-4 w-[calc(100%-1.5rem)] max-w-6xl flex-1 px-4 py-6 sm:my-6 sm:px-8 sm:py-8">
+      <main className="rg-sheet mx-auto w-full max-w-6xl flex-1 px-6 pt-8 pb-12">
         {viewOnly ? (
           // Disables every write control in the page; search and filter
           // (GET) forms and links still work. The proxy and every Server

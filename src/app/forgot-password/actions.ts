@@ -4,9 +4,8 @@ import { headers } from "next/headers"
 import { z } from "zod"
 
 import { createAdminClient } from "@/lib/supabase/admin"
-import { createClient } from "@/lib/supabase/server"
-import { serverEnv } from "@/lib/env/server"
 import { logSecurityEvent } from "@/lib/auth/security-log"
+import { sendRecoveryEmail } from "@/lib/auth/recovery-email"
 
 const schema = z.object({ email: z.email("Enter your email address.") })
 
@@ -37,6 +36,8 @@ export async function requestPasswordResetAction(_prev: ForgotPasswordState, for
     .select("id", { count: "exact", head: true })
     .eq("event_type", "PASSWORD_RESET_REQUESTED")
     .filter("metadata->>emailAttempted", "eq", email)
+    // Only emails actually sent count; refused retries don't extend the wait.
+    .filter("metadata->>sent", "eq", "true")
     .gte("created_at", since)
   const limited = countError !== null || (count ?? 0) >= MAX_REQUESTS
 
@@ -49,8 +50,7 @@ export async function requestPasswordResetAction(_prev: ForgotPasswordState, for
   })
 
   if (!limited) {
-    const supabase = await createClient()
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: `${serverEnv.APP_URL}/reset-password` })
+    const { error } = await sendRecoveryEmail(email, "/reset-password")
     if (error) console.error("password reset email failed", error.message)
   }
 

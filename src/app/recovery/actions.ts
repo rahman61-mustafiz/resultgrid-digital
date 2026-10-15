@@ -7,6 +7,7 @@ import { createClient } from "@/lib/supabase/server"
 import { serverEnv } from "@/lib/env/server"
 import { logSecurityEvent } from "@/lib/auth/security-log"
 import { checkLoginCooldown } from "@/lib/auth/rate-limit"
+import { sendRecoveryEmail } from "@/lib/auth/recovery-email"
 
 const recoverySchema = z.object({
   password: z.string().min(1, "Enter your password."),
@@ -78,13 +79,10 @@ export async function requestRecoveryAction(
   await supabase.auth.signOut()
 
   // resetPasswordForEmail actually dispatches the email via the project's
-  // configured mailer (Supabase's built-in SMTP for this MVP); the admin
-  // API's generateLink() only returns a link without sending anything,
-  // which would need a separate email-sending integration we don't have.
-  const { error: linkError } = await supabase.auth.resetPasswordForEmail(
-    serverEnv.RECOVERY_EMAIL,
-    { redirectTo: `${serverEnv.APP_URL}/recovery/callback` }
-  )
+  // configured mailer; the admin API's generateLink() only returns a link
+  // without sending anything. Sent with a plain (non-PKCE) token so
+  // /auth/confirm can verify it on the server (see sendRecoveryEmail).
+  const { error: linkError } = await sendRecoveryEmail(serverEnv.RECOVERY_EMAIL, "/recovery/callback")
 
   if (linkError) {
     return { error: "Could not send the recovery email. Try again shortly." }

@@ -55,7 +55,7 @@ export default async function AppLayout({
               <span aria-hidden="true">{(user?.email ?? "?").slice(0, 1).toUpperCase()}</span>
               <span className="sr-only">Signed in as {user?.email}</span>
             </span>
-            <span className="hidden flex-col leading-tight sm:flex xl:hidden 2xl:flex">
+            <span className="hidden flex-col leading-tight sm:flex xl:hidden">
               <span className="text-sm font-semibold">Owner</span>
               <span className="text-xs text-muted-foreground">signed in</span>
             </span>
@@ -75,7 +75,7 @@ export default async function AppLayout({
           View-only on this device. {MOBILE_VIEW_ONLY_MESSAGE}
         </div>
       ) : null}
-      <main className="rg-sheet mx-auto w-full max-w-6xl flex-1 px-6 pt-8 pb-12">
+      <main className="rg-sheet mx-auto my-4 w-[calc(100%-1.5rem)] max-w-6xl flex-1 px-4 py-6 sm:my-6 sm:px-8 sm:py-8">
         {viewOnly ? (
           // Disables every write control in the page; search and filter
           // (GET) forms and links still work. The proxy and every Server

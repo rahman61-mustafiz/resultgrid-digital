@@ -240,7 +240,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   return (
     <div className="flex flex-col gap-6">
-      <section className="flex flex-col items-start gap-4 pt-2 pb-10 sm:pb-16">
+      <section className="flex flex-col items-start gap-4 pb-4">
         {tzOk ? (
           <span className="rg-pill">
             <span aria-hidden="true" className="size-1.5 rounded-full bg-primary" />

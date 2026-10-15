@@ -8,7 +8,7 @@ import "@fontsource/poppins/600.css";
 import "@fontsource/poppins/700.css";
 import "@fontsource/ibm-plex-mono/400.css";
 
-import { SkyBackdrop } from "@/components/sky-backdrop";
+import { TechBackdrop } from "@/components/tech-backdrop";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -20,10 +20,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className="h-full antialiased">
       <body
-        className="relative min-h-full flex flex-col font-sans"
+        className="min-h-full flex flex-col font-sans"
         suppressHydrationWarning
       >
-        <SkyBackdrop />
+        <TechBackdrop />
         {children}
       </body>
     </html>

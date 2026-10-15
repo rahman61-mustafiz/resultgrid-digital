@@ -4,15 +4,15 @@
 @custom-variant dark (&:is(.dark *));
 
 :root {
-  /* Sky palette (14 Oct 2026, from Rana's Noor admin reference): a light
-     sky band at the top, white wave, white cards on a near-white page,
-     deep sky-teal primary, navy headings. */
+  /* Blueprint backdrop (gears, circuit traces) behind everything; the
+     info surfaces on top -- content panel, cards, header -- in light sky
+     tones instead of white (15 Oct 2026, Rana's Noor admin reference). */
   --radius: 0.75rem;
-  --background: #f4f9fc;
+  --background: #eef2f6;
   --foreground: #0f2a43;
-  --card: #ffffff;
+  --card: #f2f9fd;
   --card-foreground: #0f2a43;
-  --popover: #ffffff;
+  --popover: #f7fbfe;
   --popover-foreground: #0f2a43;
   --primary: #1d6a8f;
   --primary-foreground: #ffffff;
@@ -23,7 +23,7 @@
   --accent: #e0f1f9;
   --accent-foreground: #155877;
   --destructive: oklch(0.577 0.245 27.325);
-  --border: #dbe8f0;
+  --border: #d2e6f1;
   --input: #cddfea;
   --ring: #2b8ab8;
   --chart-1: #1f6fb2;
@@ -40,10 +40,10 @@
   --sidebar-border: #dbe8f0;
   --sidebar-ring: #2b8ab8;
 
-  /* The sky band behind the top of every page */
-  --sky-top: #cdebf8;
-  --sky-bottom: #e2f4fc;
-  --sky-blob: #b9e2f4;
+  /* Info surfaces over the backdrop */
+  --sheet: rgb(222 241 251 / 0.8);
+  --sheet-border: rgb(150 200 226 / 0.45);
+  --glass: rgb(214 238 250 / 0.82);
   --signal: #1d6a8f;
   --eyebrow: #2a6f92;
 
@@ -161,44 +161,68 @@
   }
 }
 
-/* ---- Sky surfaces ------------------------------------------------------- */
+/* ---- Backdrop and sky surfaces ------------------------------------------ */
 
-/* The sky band (src/components/sky-backdrop.tsx): scrolls with the page,
-   behind everything. */
-.rg-sky {
-  position: absolute;
-  inset: 0 0 auto 0;
-  height: 440px;
+/* The fixed SVG backdrop (src/components/tech-backdrop.tsx), behind everything. */
+.tech-backdrop {
+  position: fixed;
+  inset: 0;
   z-index: -1;
   pointer-events: none;
-  overflow: hidden;
+  background: var(--background);
 }
-.rg-sky svg {
+.tech-backdrop svg {
   width: 100%;
   height: 100%;
   display: block;
 }
-/* Client share pages: no band, a plain page. */
-body:has(.rg-plain) .rg-sky {
-  display: none;
+/* Over the backdrop on the client share pages: the pattern stays faint. */
+.tech-backdrop-veil {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background: rgb(246 251 254 / 0.86);
+}
+.rg-spin {
+  animation: rg-turn 140s linear infinite;
+}
+.rg-spin-slow {
+  animation: rg-turn 100s linear infinite reverse;
+}
+@keyframes rg-turn {
+  to {
+    transform: rotate(360deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rg-spin,
+  .rg-spin-slow {
+    animation: none;
+  }
 }
 
-/* The content area: open, no frame -- cards carry the structure. */
+/* The frosted light-sky panel that holds each page's content. */
 .rg-sheet {
-  background: transparent;
+  background: var(--sheet);
+  border: 1px solid var(--sheet-border);
+  border-radius: 1.5rem;
+  backdrop-filter: blur(14px) saturate(1.15);
+  -webkit-backdrop-filter: blur(14px) saturate(1.15);
+  box-shadow: 0 1px 0 rgb(255 255 255 / 0.7) inset, 0 24px 60px -32px rgb(15 42 67 / 0.35);
 }
-/* Header bar: clear over the sky, frosted once content scrolls under it. */
+/* Header bar and sign-in cards directly on the backdrop. */
 .rg-glass {
-  background: rgb(205 235 248 / 0.78);
+  background: var(--glass);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
 }
 
-/* Cards: white, soft edge, gently lifted. In the base layer so a card's
+/* Cards: light sky, soft edge, gently lifted. In the base layer so a card's
    own utilities (e.g. an amber warning border) win. */
 @layer base {
   [data-slot="card"] {
-    border-color: rgb(219 232 240 / 0.7);
+    border-color: rgb(196 224 240 / 0.8);
     box-shadow: 0 1px 2px rgb(15 42 67 / 0.04), 0 14px 34px -20px rgb(15 42 67 / 0.22);
   }
 }
@@ -226,7 +250,7 @@ table {
   align-items: center;
   gap: 0.5rem;
   border-radius: 9999px;
-  background: #ffffff;
+  background: var(--card);
   padding: 0.375rem 0.875rem;
   font-size: 0.8125rem;
   font-weight: 600;
